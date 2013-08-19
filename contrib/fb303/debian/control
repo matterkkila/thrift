@@ -1,0 +1,13 @@
+Source: thrift-fb303
+Section: misc
+Priority: extra
+Maintainer: Betable Ops <ops@betable.com>
+Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake, libtool, libthrift-dev, libboost-dev, thrift-compiler, python, python-thrift
+Standards-Version: 3.7.2
+X-Python-Version: >= 2.7
+
+Package: thrift-fb303
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libthrift0, python-thrift
+Description: Facebook's contrib fb303 library
+ A standard interface to monitoring, dynamic options and configuration, uptime reports, activity, etc.

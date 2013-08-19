@@ -2,15 +2,15 @@ Source: thrift
 Section: devel
 Priority: extra
 Build-Depends: debhelper (>= 5), build-essential, mono-gmcs, python-dev, ant,
-    mono-devel,  libmono-system-web2.0-cil, erlang-base, ruby1.8-dev, autoconf, python-support,
+    mono-devel,  libmono-system-web2.0-cil, erlang-base, ruby1.8-dev, mongrel, autoconf, python-support,
     automake, pkg-config, libtool, bison, flex, libboost-dev | libboost1.40-dev, python-all,
-    python-all-dev, python-all-dbg, openjdk-6-jdk | java-sdk, libcommons-lang3-java,
+    python-all-dev, python-all-dbg, openjdk-6-jdk | java-sdk, libcommons-lang-java,
     libboost-test-dev | libboost-test1.40-dev, libevent-dev, perl (>= 5.8.0-7),
     php5, php5-dev, libglib2.0-dev, libqt4-dev
 Maintainer: Thrift Developer's <dev@thrift.apache.org>
 Homepage: http://thrift.apache.org/
-Vcs-Git: https://git-wip-us.apache.org/repos/asf/thrift.git
-Vcs-Browser: https://git-wip-us.apache.org/repos/asf?p=thrift.git
+Vcs-Svn: https://svn.apache.org/repos/asf/thrift
+Vcs-Browser: http://svn.apache.org/viewvc/thrift
 Standards-Version: 3.7.2
 XS-Python-Version: >= 2.4
 
@@ -78,7 +78,7 @@ Package: libthrift-java
 Architecture: all
 Section: libs
 Depends: java-gcj-compat | java1-runtime | java2-runtime, ${misc:Depends}
-Recommends: libcommons-lang3-java
+Recommends: libcommons-lang-java
 Description: Java bindings for Thrift
  Thrift is a software framework for scalable cross-language services
  development. It combines a software stack with a code generation engine to
@@ -152,3 +152,41 @@ Description: PHP bindings for Thrift
  build services that work efficiently and seamlessly.
  .
  This package contains the PHP bindings for Thrift.
+
+Package: libfb303-dev
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libthrift0, libglib2.0-dev, libfb303
+Description: FB303 C++ library (development headers)
+ A standard interface for monitoring, dynamic options and configuration, uptime
+ reports and activity.
+ .
+ This package contains the development libraries required for writing C++
+ applications using Thrift.
+
+Package: libfb303
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libthrift0, libglib2.0-dev
+Description: FB303 C++ library (development headers)
+ A standard interface for monitoring, dynamic options and configuration, uptime
+ reports and activity.
+ .
+ This package contains the runtime libraries needed for C++ applications
+ using FB303.
+
+Package: python-fb303
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Section: python
+Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Recommends: python-twisted-core
+Provides: ${python:Provides}
+Description: Python bindings for Thrift
+ A Python/Thrift standard interface to monitoring, dynamic options and
+ configuration, uptime reports, activity, etc.
+ .
+ This package contains the Python bindings for fb303 via Thrift. You will need the thrift
+ tool (in the thrift-compiler package) to compile your definition to Java
+ classes, and then the modules in this package will allow you to use those
+ classes in your programs.

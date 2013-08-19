@@ -1,8 +1,21 @@
-thrift (1.0.0-dev) stable; urgency=low
-  * update version
-  * fix libthrift0.install
+thrift (0.9.0~betable1) precise; urgency=low
 
- -- Roger Meier <roger@apache.org>  Tue, 08 Jan 2013 22:40:12 +0100
+  * Upstream release
+
+ -- Betable Ops <ops@betable.com>  Mon, 19 Aug 2013 14:48:25 -0800
+
+thrift (0.9.0~jb1ubuntu2) lucid; urgency=low
+
+  * Rebuilt to fix libevent linking issue.
+  * libfb303-dev should depend on libfb303.
+
+ -- Kyle Ambroff <ambroff@jawbone.com>  Fri, 22 Feb 2013 02:48:25 +0000
+
+thrift (0.9.0~jb1) precise; urgency=low
+
+  * Updated package for 0.9.0.
+
+ -- Kyle Ambroff <ambroff@jawbone.com>  Tue, 29 Jan 2013 00:05:48 +0000
 
 thrift (0.9.0) stable; urgency=low
 

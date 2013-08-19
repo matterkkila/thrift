@@ -1,0 +1,23 @@
+thrift-fb303 (0.9.0-betable1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Betable Ops <ops@betable.com>  Mon, 19 Aug 2013 13:00:00 -0800
+
+thrift-fb303 (0.1-rdio2) unstable; urgency=low
+
+  * ubuntu 12.04 and python 2.7 work
+
+ -- Matt Erkkila <matt.erkkila.rd.io>  Tue, 04 Sep 2012 13:00:00 -0800
+
+thrift-fb303 (0.1-rdio1) unstable; urgency=low
+
+  * Rdio debian work
+
+ -- Matt Erkkila <matt.erkkila.rd.io>  Thu, 15 Mar 2012 13:00:00 -0800
+
+thrift-fb303 (0.1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- goffinet <goffinet@digg.com>  Mon, 13 Apr 2009 19:32:45 -0700

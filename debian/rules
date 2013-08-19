@@ -25,6 +25,10 @@ configure-stamp:
 	if [ -f bootstrap.sh ]; then $(CURDIR)/bootstrap.sh; fi
 	$(CURDIR)/configure --prefix=/usr --with-c_glib --without-erlang
 
+	(cd $(CURDIR)/contrib/fb303; \
+		CPPFLAGS=-I$(CURDIR)/lib/cpp/src ./bootstrap.sh \
+		--prefix=/usr/ --with-thriftpath=$(CURDIR))
+
 	touch configure-stamp
 
 
@@ -59,6 +63,14 @@ build-arch-stamp: configure-stamp
 
 	touch $@
 
+	# fb303
+	mkdir -p $(CURDIR)/bin
+	# Not doing a symlink because VirtualBox is terrible.
+	#ln -snf $(CURDIR)/compiler/cpp/thrift $(CURDIR)/bin/thrift
+	cp -v $(CURDIR)/compiler/cpp/thrift $(CURDIR)/bin/thrift
+	$(MAKE) -C $(CURDIR)/contrib/fb303
+
+
 build-indep: build-indep-stamp
 build-indep-stamp: configure-stamp
 
@@ -70,7 +82,7 @@ build-indep-stamp: configure-stamp
 		ant
 
 	# C#
-	$(MAKE) -C $(CURDIR)/lib/csharp
+	#$(MAKE) -C $(CURDIR)/lib/csharp
 
 	# Ruby
 	$(MAKE) -C $(CURDIR)/lib/rb
@@ -87,6 +99,8 @@ clean:
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
+	-$(MAKE) -C $(CURDIR)/contrib/fb303 distclean
+	rm -rf $(CURDIR)/bin
 
 	dh_clean
 
@@ -119,9 +133,9 @@ install-indep:
 		$(CURDIR)/debian/ruby-thrift/usr/lib/ruby/1.9.1
 
 	# C#
-	mkdir -p $(CURDIR)/debian/libthrift-cil/usr/lib/cli/thrift/ && \
-	cp $(CURDIR)/lib/csharp/Thrift.dll \
-		$(CURDIR)/debian/libthrift-cil/usr/lib/cli/thrift/Thrift.dll
+	#mkdir -p $(CURDIR)/debian/libthrift-cil/usr/lib/cli/thrift/ && \
+	#cp $(CURDIR)/lib/csharp/Thrift.dll \
+	#	$(CURDIR)/debian/libthrift-cil/usr/lib/cli/thrift/Thrift.dll
 
 	# Perl
 	$(MAKE) -C $(CURDIR)/lib/perl install DESTDIR=$(CURDIR)/debian/libthrift-perl/usr
@@ -162,11 +176,14 @@ install-arch:
 		$(MAKE) DESTDIR=$(CURDIR)/debian/php5-thrift install
 
 	# C++ and C (glib)
-	mkdir -p $(CURDIR)/debian/tmp; \
+	$(MAKE) -p $(CURDIR)/debian/tmp; \
 	cd $(CURDIR)/lib/cpp && \
-		make DESTDIR=$(CURDIR)/debian/tmp install
+		$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
 	cd $(CURDIR)/lib/c_glib && \
-		make DESTDIR=$(CURDIR)/debian/tmp install
+		$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+
+	# fb303
+	(cd $(CURDIR)/contrib/fb303 && $(MAKE) DESTDIR=$(CURDIR)/debian/tmp install)
 
 	dh_install --sourcedir=debian/tmp -s
 

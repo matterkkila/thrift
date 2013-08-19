@@ -1,0 +1,5 @@
+usr/local/include/thrift/fb303/*
+usr/local/lib/libfb303.*
+usr/local/lib/python2.7/dist-packages/fb303/*
+usr/local/lib/python2.7/dist-packages/fb303_scripts/*
+usr/local/share/fb303/*
