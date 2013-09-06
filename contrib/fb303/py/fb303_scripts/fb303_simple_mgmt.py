@@ -24,18 +24,15 @@ from optparse import OptionParser
 
 from thrift.Thrift import *
 
-from thrift.transport import TSocket
+from thrift.transport import TSocket, TSSLSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 
 from fb303 import *
 from fb303.ttypes import *
 
-def service_ctrl(
-                 command,
-                 port,
-                 trans_factory = None,
-                 prot_factory = None):
+def service_ctrl(command, port, trans_factory=None, prot_factory=None,
+                validate=True, ca_certs=None, keyfile=None, certfile=None):
     """
     service_ctrl is a generic function to execute standard fb303 functions
 
@@ -49,8 +46,8 @@ def service_ctrl(
 
     if command in ["status"]:
         try:
-            status = fb303_wrapper('status', port, trans_factory, prot_factory)
-            status_details = fb303_wrapper('get_status_details', port, trans_factory, prot_factory)
+            status = fb303_wrapper('status', port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
+            status_details = fb303_wrapper('get_status_details', port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
 
             msg = fb_status_string(status)
             if (len(status_details)):
@@ -68,7 +65,7 @@ def service_ctrl(
     # scalar commands
     if command in ["version","alive","name"]:
         try:
-            result = fb303_wrapper(command,  port, trans_factory, prot_factory)
+            result = fb303_wrapper(command,  port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
             print result
             return 0
         except:
@@ -78,7 +75,7 @@ def service_ctrl(
     # counters
     if command in ["counters"]:
         try:
-            counters = fb303_wrapper('counters',  port, trans_factory, prot_factory)
+            counters = fb303_wrapper('counters',  port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
             for counter in counters:
                 print "%s: %d" % (counter, counters[counter])
             return 0
@@ -92,7 +89,7 @@ def service_ctrl(
         # async commands
         if command in ["stop","reload"] :
             try:
-                fb303_wrapper(command, port, trans_factory, prot_factory)
+                fb303_wrapper(command, port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
                 return 0
             except:
                 print "failed to tell the service to ", command
@@ -114,8 +111,14 @@ def service_ctrl(
     return 0;
 
 
-def fb303_wrapper(command, port, trans_factory = None, prot_factory = None):
-    sock = TSocket.TSocket('localhost', port)
+def fb303_wrapper(command, port, trans_factory = None, prot_factory = None,
+    validate=True, ca_certs=None, keyfile=None, certfile=None):
+
+    if (ca_certs is not None or keyfile is not None or certfile is not None):
+        sock = TSSLSocket.TSSLSocket('localhost', port,
+            validate=validate, ca_certs=ca_certs, keyfile=keyfile, certfile=certfile)
+    else:
+        sock = TSocket.TSocket('localhost', port)
 
     # use input transport factory if provided
     if (trans_factory is None):
@@ -183,8 +186,8 @@ def main():
 
     parser.add_option("-c", "--command", dest="command", help="execute this API",
                       choices=commands, default="status")
-    parser.add_option("-p","--port",dest="port",help="the service's port",
-                      default=9082)
+    parser.add_option("-p", "--port", dest="port", help="the service's port",
+                      default=1463)
 
     (options, args) = parser.parse_args()
     status = service_ctrl(options.command, options.port)
