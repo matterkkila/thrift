@@ -55,12 +55,13 @@ def service_ctrl(command, port, trans_factory=None, prot_factory=None,
             print msg
 
             if (status == fb_status.ALIVE):
-                return 2
+                return 0
             else:
-                return 3
-        except:
+                return 1
+        except Exception as ex:
             print "Failed to get status"
-            return 3
+            print ex
+            return 1
 
     # scalar commands
     if command in ["version","alive","name"]:
@@ -68,9 +69,10 @@ def service_ctrl(command, port, trans_factory=None, prot_factory=None,
             result = fb303_wrapper(command,  port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
             print result
             return 0
-        except:
-            print "failed to get ",command
-            return 3
+        except Exception as ex:
+            print "failed to get ", command
+            print ex
+            return 1
 
     # counters
     if command in ["counters"]:
@@ -79,9 +81,10 @@ def service_ctrl(command, port, trans_factory=None, prot_factory=None,
             for counter in counters:
                 print "%s: %d" % (counter, counters[counter])
             return 0
-        except:
+        except Exception as ex:
             print "failed to get counters"
-            return 3
+            print ex
+            return 1
 
 
     # Only root should be able to run the following commands
@@ -91,13 +94,14 @@ def service_ctrl(command, port, trans_factory=None, prot_factory=None,
             try:
                 fb303_wrapper(command, port, trans_factory, prot_factory, validate, ca_certs, keyfile, certfile)
                 return 0
-            except:
+            except Exception as ex:
                 print "failed to tell the service to ", command
-                return 3
+                print ex
+                return 1
     else:
         if command in ["stop","reload"]:
             print "root privileges are required to stop or reload the service."
-            return 4
+            return 1
 
     print "The following commands are available:"
     for command in ["counters","name","version","alive","status"]:
